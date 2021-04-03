@@ -7,19 +7,19 @@ using namespace std;
 #define NAME_SIZE       32
 #define ADDRESS_SIZE    128
 #define PHONE_SIZE      14 //000-0000-0000
-#define STUDENT_MAX     10 
+#define STUDENT_MAX     3 
 
-struct _tagStudent { // 총 56bite를 먼저 잡고 그걸 분할해서 배열 처럼 쓰는 거임
-    char strName[NAME_SIZE];// = {}; //string 1개당 1bite // 32개 32bite
+struct _tagStudent { // 총 56byte를 먼저 잡고 그걸 분할해서 배열 처럼 쓰는 거임
+    char strName[NAME_SIZE];// = {}; //string 1개당 1byte // 32개 32byte
     char strAddress[ADDRESS_SIZE];
     char strPhoneNumber[PHONE_SIZE];
-    int iNumber; //int 개당 4 bite
+    int iNumber; //int 개당 4 byte
     int iKor;
     int iEng;
     int iMath;
     int iTotal;
     float fAvg;
-    float iE; // float 개당 4bite
+    float iE; // float 개당 4byte
 };
 
 enum MENU {
@@ -84,7 +84,7 @@ int main() {
             cout << "------------학생 추가------------" << endl;
 
             // 등록된 학생이 등록할 수 있는 최대치 일 경우 더이상 등록 안되게 막기
-            if (iStdNumber == STUDENT_MAX)
+            if (iStdNumber == STUDENT_MAX+1) //STUDENT_MAX로 하면 최대 10명이라고 해놓고 9명까지 밖에 못 받음
                 break;
 
 
