@@ -1,11 +1,13 @@
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
+// define으로 각 배열의 크기를 정해주자.
 #define NAME_SIZE       32
 #define ADDRESS_SIZE    128
-#define PHONE_SIZE      14
-#define STUDENT_MAX     10
+#define PHONE_SIZE      14 //000-0000-0000
+#define STUDENT_MAX     10 
 
 struct _tagStudent { // 총 56bite를 먼저 잡고 그걸 분할해서 배열 처럼 쓰는 거임
     char strName[NAME_SIZE];// = {}; //string 1개당 1bite // 32개 32bite
@@ -16,7 +18,7 @@ struct _tagStudent { // 총 56bite를 먼저 잡고 그걸 분할해서 배열 처럼 쓰는 거임
     int iEng;
     int iMath;
     int iTotal;
-    int fAvg;
+    float fAvg;
     float iE; // float 개당 4bite
 };
 
@@ -33,7 +35,10 @@ int main() {
     _tagStudent tStudentArr[STUDENT_MAX] = {};
     // 배열에 추가된 개수를 저장할 변수를 만들어준다.
     int iStudentCount = 0;
+    int iStdNumber = 1;
+    char strName[NAME_SIZE] = {};
 
+    ofstream outToTxt("Profiles of students.txt");
     while (true) {
         system("cls");
 
@@ -75,15 +80,133 @@ int main() {
             break;
 
         case    MENU_INSERT:
+            system("cls");
+            cout << "------------학생 추가------------" << endl;
+
+            // 등록된 학생이 등록할 수 있는 최대치 일 경우 더이상 등록 안되게 막기
+            if (iStdNumber == STUDENT_MAX)
+                break;
+
+
             //학생정보 추가시 학생정보는 이름, 주소, 폰 번호
             //국어, 영어, 수학 점수는 입력받고 학번, 총점, 평균은 연산을 통해 계산
+            // 이름 입력받기
+            cout << "이름 : ";
+            cin >> tStudentArr[iStudentCount].strName;
+
+            cin.ignore(1024, '\n');
+            cout << "주소 : ";
+            cin.getline(tStudentArr[iStudentCount].strAddress, ADDRESS_SIZE);
+            //cin만 하게되면 스페이스바도 입력의 끝으로 받아 들여버려
+            //cin.getline은 입력받고자 하는 변수 + 입력 받을  최대 수치
+            cout << tStudentArr[iStudentCount].strAddress<< endl;
+
+            cout << "전화번호 : ";
+            cin.getline(tStudentArr[iStudentCount].strPhoneNumber, PHONE_SIZE);
+
+            cout << "국어 : ";
+            cin >> tStudentArr[iStudentCount].iKor;
+            cout << "영어 : ";
+            cin >> tStudentArr[iStudentCount].iEng;
+            cout << "수학 : ";
+            cin >> tStudentArr[iStudentCount].iMath;
+
+            tStudentArr[iStudentCount].iTotal =
+                tStudentArr[iStudentCount].iKor +
+                tStudentArr[iStudentCount].iEng +
+                tStudentArr[iStudentCount].iMath;
+            tStudentArr[iStudentCount].fAvg = tStudentArr[iStudentCount].iTotal / 3.f;
+            tStudentArr[iStudentCount].iNumber = iStdNumber;
+            ++iStudentCount;
+            ++iStdNumber;
+
+            cout << "학생 추가 완료" << endl;
 
             break;  
         case    MENU_DELETE:
+            system("cls");
+
+
+            cout << "------------학생 삭제------------" << endl;
+
+            cin.ignore(1024, '\n');
+            cout << "삭제할 이름을 입력하세요 : ";
+            cin.getline(strName, NAME_SIZE);
+
+            //등록된 학생 수 만큼 반복하여 학생 찾기
+            for (int i = 0; i < iStudentCount; i++) {
+
+                //학생을 찾았을 경우
+                if (strcmp(tStudentArr[i].strName, strName) == 0) {
+                    for (int j = i; j < iStudentCount - 1; j++) {
+                        tStudentArr[j] = tStudentArr[j + 1];
+                    }
+                    -- iStudentCount;
+                }
+                cout << "학생을 삭제하였습니다." << endl;
+            }
+
             break;
         case      MENU_OUTPUT:
+            system("cls");
+            cout << "------------학생 출력------------" << endl;
+            
+            //등록된 학생 수만큼 반복하여  학생정보 출력
+            for (int i = 0; i < iStudentCount; i++) {
+                cout << "이름 : " << tStudentArr[i].strName << endl;
+                cout << "전화번후 : " << tStudentArr[i].strPhoneNumber << endl;
+                cout << "주소 : " << tStudentArr[i].strAddress << endl;
+                cout << "학번 : " << tStudentArr[i].iNumber << endl;
+                cout << "국어 : " << tStudentArr[i].iKor << endl;
+                cout << "영어 : " << tStudentArr[i].iEng << endl;
+                cout << "수학 : " << tStudentArr[i].iMath << endl;
+                cout << "총점 : " << tStudentArr[i].iTotal << endl;
+                cout << "평균 : " << tStudentArr[i].fAvg << endl << endl;
+            }
+          
+            for (int i = 0; i < iStudentCount; i++) {
+                outToTxt << "이름 : " << tStudentArr[i].strName << endl;
+                outToTxt << "전화번후 : " << tStudentArr[i].strPhoneNumber << endl;
+                outToTxt << "주소 : " << tStudentArr[i].strAddress << endl;
+                outToTxt << "학번 : " << tStudentArr[i].iNumber << endl;
+                outToTxt << "국어 : " << tStudentArr[i].iKor << endl;
+                outToTxt << "영어 : " << tStudentArr[i].iEng << endl;
+                outToTxt << "수학 : " << tStudentArr[i].iMath << endl;
+                outToTxt << "총점 : " << tStudentArr[i].iTotal << endl;
+                outToTxt << "평균 : " << tStudentArr[i].fAvg << endl << endl;
+            }
+            outToTxt.close();
+
             break;
         case MENU_SEARCH:
+            system("cls");
+
+            
+            cout << "------------학생 탐색------------" << endl;
+
+            cin.ignore(1024, '\n');
+            cout << "탐색할 이름을 입력하세요 : ";
+            cin.getline(strName, NAME_SIZE);
+
+            //등록된 학생 수 만큼 반복하여 학생 찾기
+            for (int i = 0; i < iStudentCount; i++) {
+
+                //학생을 찾았을 때
+                if (strcmp(tStudentArr[i].strName, strName) == 0) {
+                    cout<< "이름 : " << tStudentArr[i].strName << endl;
+                    cout << "전화번후 : " << tStudentArr[i].strPhoneNumber << endl;
+                    cout << "주소 : " << tStudentArr[i].strAddress << endl;
+                    cout << "학번 : " << tStudentArr[i].iNumber << endl;
+                    cout << "국어 : " << tStudentArr[i].iKor << endl;
+                    cout << "영어 : " << tStudentArr[i].iEng << endl;
+                    cout << "수학 : " << tStudentArr[i].iMath << endl;
+                    cout << "총점 : " << tStudentArr[i].iTotal << endl;
+                    cout << "평균 : " << tStudentArr[i].fAvg << endl << endl;
+                    break;
+                }
+            }
+
+
             break;   
         default:
             cout << "메뉴를 잘못 선택했습니다." << endl;
