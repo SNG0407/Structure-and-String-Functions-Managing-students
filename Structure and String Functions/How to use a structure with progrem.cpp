@@ -137,6 +137,8 @@ int main() {
             for (int i = 0; i < iStudentCount; i++) {
 
                 //학생을 찾았을 경우
+                // 총 학생이 7명 있고, i = 2인 경우 j는 2부터 7-1=6 미만 까지 
+                //즉 j = 2,3,4,5     a[2]=a[3], a[3] =a[4], a[4]=a[5], a[5] = a[6]
                 if (strcmp(tStudentArr[i].strName, strName) == 0) {
                     for (int j = i; j < iStudentCount - 1; j++) {
                         tStudentArr[j] = tStudentArr[j + 1];
